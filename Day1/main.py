@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from enum import Enum
+from pydantic import BaseModel
 app = FastAPI()
 
 class ModelName(str,Enum):
@@ -7,8 +8,21 @@ class ModelName(str,Enum):
     resnet = 'resnet'
     lenet = 'lenet'
     
+class Items(BaseModel):
+    name:str 
+    price:float 
+    qty:int 
+    description: str | None = None
+    
+    
+    
     
 fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
+
+
+@app.post("/create")
+async def createItems(items:Items):
+    return items
 
 @app.get("/")
 async def root():
@@ -52,3 +66,5 @@ async def read_user_item(userid:int,itemid:str,q:str | None = None, short:bool=F
         item.update({"description":"this is  an amazing item"})
         
     return item
+
+
